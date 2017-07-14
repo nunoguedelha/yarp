@@ -5,8 +5,7 @@
  *
  */
 
-#include "MjpegStream.h"
-#include "MjpegDecompression.h"
+
 
 #include <yarp/os/Log.h>
 #include <yarp/sig/Image.h>
@@ -15,15 +14,23 @@
 #include <cstdio>
 #include <cstring>
 
+#include "H264Stream.h"
+
 using namespace yarp::os;
 using namespace yarp::sig;
-using namespace yarp::mjpeg;
 using namespace std;
 
-YARP_SSIZE_T MjpegStream::read(const Bytes& b) {
 
+
+YARP_SSIZE_T H264Stream::read(const Bytes& b)
+{
+    memcpy(b.get(), decoder->getLastFrame().getRawImage(),  decoder->getLastFrameSize());
+}
+
+
+#if 0
+YARP_SSIZE_T H264Stream::read(const Bytes& b) {
     bool debug = false;
-    printf("-------------------sono dentro la MjpegStream!! \n");
     if (remaining==0) {
         if (phase==1) {
             phase = 2;
@@ -126,8 +133,9 @@ YARP_SSIZE_T MjpegStream::read(const Bytes& b) {
     return -1;
 }
 
+#endif
 
-void MjpegStream::write(const Bytes& b) {
+void H264Stream::write(const Bytes& b) {
     delegate->getOutputStream().write(b);
 }
 
