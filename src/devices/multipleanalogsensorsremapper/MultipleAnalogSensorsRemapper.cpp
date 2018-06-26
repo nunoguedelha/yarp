@@ -106,7 +106,7 @@ bool getVectorOfStringFromListInConfig(const std::string& key, const os::Searcha
     yarp::os::Bottle *propList=prop.find(key.c_str()).asList();
     if (!propList && keyExists)
     {
-       yError() <<"MultipleAnalogSensorsRemapper : Error parsing parameters: if present " << key << " should be followed by a list of strings.\n";
+       yError() <<"MultipleAnalogSensorsRemapper : Error (" << prop.toString() << " and " << keyExists << ") parsing parameters: if present " << key << " should be followed by a list of strings.\n";
        return false;
     }
 
@@ -190,6 +190,7 @@ bool MultipleAnalogSensorsRemapper::genericAttachAll(const MAS_SensorType sensor
                 }
 
                 sensorLocationMap[name] = SensorInSubDevice(p, s);
+                yWarning() << "MultipleAnalogSensorsRemapper: found sensor type [" << sensorType << "], name[" << name << "], subdevice[" << p << "], subindex[" << s << "].";
             }
         }
     }
