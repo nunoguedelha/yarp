@@ -23,6 +23,14 @@ namespace yarp
             VOCAB_PIDTYPE_VELOCITY = yarp::os::createVocab('v', 'e', 'l'),
             VOCAB_PIDTYPE_TORQUE   = yarp::os::createVocab('t', 'r', 'q'),
             VOCAB_PIDTYPE_CURRENT  = yarp::os::createVocab('c', 'u', 'r')
+
+            //VOCAB_PIDTYPE_TRAJECTORY = yarp::os::createVocab('t', 'r', 'j'),
+            //VOCAB_PIDTYPE_DIRECT     = yarp::os::createVocab('d', 'i', 'r'),
+            //VOCAB_PIDTYPE_TORQUE     = yarp::os::createVocab('t', 'r', 'q'),
+            //VOCAB_PIDTYPE_CURRENT    = yarp::os::createVocab('c', 'u', 'r'),
+            //VOCAB_PIDTYPE_LLSPEED    = yarp::os::createVocab('l', 's', 'p'),
+            //VOCAB_PIDTYPE_POSITION = VOCAB_PIDTYPE_TRAJECTORY,
+            //VOCAB_PIDTYPE_VELOCITY = VOCAB_PIDTYPE_LLSPEED,
         };
 
 YARP_WARNING_PUSH

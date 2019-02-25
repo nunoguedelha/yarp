@@ -48,6 +48,7 @@ public:
     PidUnits* VelPid_units;
     PidUnits* CurPid_units;
     PidUnits* TrqPid_units;
+    //PidUnits* SpdPid_units;
     std::map<PidControlTypeEnum, PidUnits*>   pid_units;
 
     explicit PrivateUnitsHandler(int size) :
@@ -66,7 +67,8 @@ public:
         PosPid_units(nullptr),
         VelPid_units(nullptr),
         CurPid_units(nullptr),
-        TrqPid_units(nullptr)
+        TrqPid_units(nullptr)//,
+        //SpdPid_units(nullptr)
     {
         alloc(size);
         std::fill_n(helper_ones, size, 1.0);
@@ -86,6 +88,7 @@ public:
         checkAndDestroy(VelPid_units);
         checkAndDestroy(TrqPid_units);
         checkAndDestroy(CurPid_units);
+        //checkAndDestroy(SpdPid_units);
         checkAndDestroy<double>(position_zeros);
         checkAndDestroy<double>(helper_ones);
         checkAndDestroy<int>(axisMap);
@@ -115,6 +118,7 @@ public:
         VelPid_units = new PidUnits[nj];
         TrqPid_units = new PidUnits[nj];
         CurPid_units = new PidUnits[nj];
+        //SpdPid_units = new PidUnits[nj];
         bemfToRaws = new double[nj];
         ktauToRaws = new double[nj];
 
@@ -131,13 +135,15 @@ public:
         yAssert(VelPid_units != nullptr);
         yAssert(TrqPid_units != nullptr);
         yAssert(CurPid_units != nullptr);
+        //yAssert(SpdPid_units != nullptr);
         yAssert(bemfToRaws != nullptr);
         yAssert(ktauToRaws != nullptr);
 
         pid_units[VOCAB_PIDTYPE_POSITION] = PosPid_units;
         pid_units[VOCAB_PIDTYPE_VELOCITY] = VelPid_units;
-        pid_units[VOCAB_PIDTYPE_CURRENT] = CurPid_units;
-        pid_units[VOCAB_PIDTYPE_TORQUE] = TrqPid_units;
+        pid_units[VOCAB_PIDTYPE_CURRENT] =  CurPid_units;
+        pid_units[VOCAB_PIDTYPE_TORQUE] =   TrqPid_units;
+        //pid_units[VOCAB_PIDTYPE_LLSPEED] =  SpdPid_units;
     }
 
     PrivateUnitsHandler(const PrivateUnitsHandler& other)
@@ -156,6 +162,7 @@ public:
         memcpy(this->VelPid_units, other.VelPid_units, sizeof(*other.VelPid_units)*nj);
         memcpy(this->TrqPid_units, other.TrqPid_units, sizeof(*other.TrqPid_units)*nj);
         memcpy(this->CurPid_units, other.CurPid_units, sizeof(*other.CurPid_units)*nj);
+        //memcpy(this->SpdPid_units, other.SpdPid_units, sizeof(*other.SpdPid_units)*nj);
         memcpy(this->bemfToRaws, other.bemfToRaws, sizeof(*other.bemfToRaws)*nj);
         memcpy(this->ktauToRaws, other.ktauToRaws, sizeof(*other.ktauToRaws)*nj);
     }
@@ -789,6 +796,7 @@ double ControlBoardHelper::get_pidfeedback_conversion_factor_user2raw(const yarp
             switch (pidtype)
             {
                 case yarp::dev::PidControlTypeEnum::VOCAB_PIDTYPE_POSITION: feedback_conversion_factor = mPriv->angleToEncoders[j];  break;
+                //case yarp::dev::PidControlTypeEnum::VOCAB_PIDTYPE_LLSPEED: feedback_conversion_factor = mPriv->angleToEncoders[j];  break;
                 case yarp::dev::PidControlTypeEnum::VOCAB_PIDTYPE_VELOCITY: feedback_conversion_factor = mPriv->angleToEncoders[j];  break;
                 case yarp::dev::PidControlTypeEnum::VOCAB_PIDTYPE_TORQUE: feedback_conversion_factor = mPriv->newtonsToSensors[j];  break;
                 case yarp::dev::PidControlTypeEnum::VOCAB_PIDTYPE_CURRENT: feedback_conversion_factor = mPriv->ampereToSensors[j];  break;
@@ -865,6 +873,7 @@ void ControlBoardHelper::convert_pidunits_to_machine(const yarp::dev::PidControl
         //This is fine if convert_pidunits_to_machine() is called by methods that are aware of this feature, that is intentional.
         cb_helper->posA2E(userval, j, machineval, k);
         break;
+    //case yarp::dev::VOCAB_PIDTYPE_LLSPEED:
     case yarp::dev::VOCAB_PIDTYPE_VELOCITY:
         cb_helper->velA2E(userval, j, machineval, k);
         break;
@@ -890,6 +899,7 @@ void ControlBoardHelper::convert_pidunits_to_machine(const yarp::dev::PidControl
         //This is fine if convert_pidunits_to_machine() is called by methods that are aware of this feature, that is intentional.
         cb_helper->posA2E(userval, machineval);
         break;
+    //case yarp::dev::VOCAB_PIDTYPE_LLSPEED:
     case yarp::dev::VOCAB_PIDTYPE_VELOCITY:
         cb_helper->velA2E(userval, machineval);
         break;
@@ -915,6 +925,7 @@ void ControlBoardHelper::convert_pidunits_to_user(const yarp::dev::PidControlTyp
         //This is fine if convert_pidunits_to_user() is called by methods that are aware of this feature, that is intentional.
         *userval = cb_helper->posE2A(machineval, k);
         break;
+    //case yarp::dev::VOCAB_PIDTYPE_LLSPEED:
     case yarp::dev::VOCAB_PIDTYPE_VELOCITY:
         *userval = cb_helper->velE2A(machineval, k);
         break;
@@ -940,6 +951,7 @@ void ControlBoardHelper::convert_pidunits_to_user(const yarp::dev::PidControlTyp
         //This is fine if convert_pidunits_to_user() is called by methods that are aware of this feature, that is intentional.
         cb_helper->posE2A(machineval, userval);
         break;
+    //case yarp::dev::VOCAB_PIDTYPE_LLSPEED:
     case yarp::dev::VOCAB_PIDTYPE_VELOCITY:
         cb_helper->velE2A(machineval, userval);
         break;
